@@ -1,0 +1,10 @@
+LLM_PROVIDER=gemini
+
+# API exclusiva para adaptar el CV
+CV_API_KEY=
+CV_MODEL=
+
+# API/modelo reservados para el scraper con IA (no usados por el scraper HTTP actual)
+SCRAPER_API_KEY=
+SCRAPER_MODEL=
+

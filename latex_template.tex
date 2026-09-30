@@ -1,0 +1,84 @@
+\documentclass[10pt,a4paper]{article}
+
+% Plantilla fija del CV. Los marcadores ZZNOMBREZZ son reemplazados por Python.
+\usepackage[left=0.78in,right=0.78in,top=0.62in,bottom=0.62in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+\definecolor{cvblue}{HTML}{174A7E}
+\definecolor{cvgray}{HTML}{666666}
+\definecolor{rulegray}{HTML}{B8B8B8}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.08em}
+\linespread{1.04}
+\setlist[itemize]{
+  label=\raisebox{0.25ex}{\scriptsize\rule{0.55ex}{0.55ex}},
+  leftmargin=1.35em,
+  itemsep=0.30em,
+  topsep=0.42em,
+  parsep=0pt,
+  partopsep=0pt
+}
+
+\newcommand{\cvsection}[1]{%
+  \vspace{0.95em}%
+  {\large\bfseries\color{cvblue}#1}\par
+  \vspace{0.22em}%
+  {\color{rulegray}\hrule height 0.45pt}%
+  \vspace{0.55em}%
+}
+
+\newcommand{\cventry}[5]{%
+  \textbf{#1}\hfill #2\par
+  \textit{#3}\hfill \textit{#4}\par
+  \vspace{0.16em}%
+  #5\par
+  \vspace{0.68em}%
+}
+
+\newcommand{\cveducation}[3]{%
+  \textbf{#1}\hfill #3\par
+  \textit{#2}\par
+  \vspace{0.38em}%
+}
+
+\begin{document}
+
+{\fontsize{25}{29}\selectfont\bfseries ZZNOMBREZZ}\par
+\vspace{0.12em}
+{\large\color{cvgray}ZZCARGOZZ}\par
+\vspace{0.55em}
+
+\textbf{Teléfono:} ZZTELEFONOZZ
+\hspace{0.8em}{\color{rulegray}|}\hspace{0.8em}
+\textbf{Correo:} \href{mailto:ZZCORREOZZ}{ZZCORREOZZ}\par
+\vspace{0.25em}
+\textbf{Sitio web:} \href{https://ZZSITIOWEBZZ}{ZZSITIOWEBZZ}
+\hspace{0.8em}{\color{rulegray}|}\hspace{0.8em}
+\textbf{Ubicación:} ZZUBICACIONZZ
+
+\cvsection{Perfil profesional}
+ZZPERFILZZ
+
+\cvsection{Experiencia profesional}
+ZZEXPERIENCIAZZ
+
+\cvsection{Educación}
+ZZEDUCACIONZZ
+
+\cvsection{Habilidades técnicas}
+ZZHABILIDADESZZ
+
+\cvsection{Idiomas}
+ZZIDIOMASZZ
+
+\cvsection{Certificaciones}
+ZZCERTIFICACIONESZZ
+
+\end{document}

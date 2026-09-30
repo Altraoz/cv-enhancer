@@ -1,0 +1,13 @@
+.env
+__pycache__/
+*.py[cod]
+
+# Ofertas y resultados generados
+ofertas/*
+
+# CV personal
+data/cv.md
+
+# Entornos virtuales
+.venv/
+venv/

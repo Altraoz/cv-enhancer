@@ -1,0 +1,66 @@
+Adapta estratégicamente el contenido de este CV a la oferta laboral.
+
+IMPORTANTE: no generes LaTeX, Markdown ni HTML. Devuelve únicamente un objeto JSON válido.
+El JSON será insertado posteriormente por un programa Python en una plantilla LaTeX fija.
+No incluyas texto antes ni después del objeto JSON y no uses bloques de código.
+
+Antes de redactar el JSON, analiza internamente la oferta e identifica:
+- responsabilidades principales del cargo;
+- tecnologías, herramientas y frameworks solicitados;
+- competencias técnicas y metodologías;
+- nivel de experiencia, idiomas y requisitos académicos;
+- palabras clave relevantes para sistemas ATS.
+
+Reglas de adaptación:
+1. Conserva únicamente información verdadera y explícita del CV base.
+2. No inventes empresas, fechas, cargos, métricas, tecnologías, responsabilidades ni proyectos.
+3. Prioriza las experiencias y logros más relacionados con la oferta.
+4. Dentro de cada experiencia, ordena primero los logros más relevantes para el cargo objetivo.
+5. Puedes reescribir los logros para hacerlos más claros y orientados a resultados, sin cambiar su significado.
+6. Usa palabras clave de la oferta únicamente cuando describan algo presente en el CV.
+7. Reduce contenido poco relacionado si es necesario, pero no borres experiencia importante solo para forzar una página.
+8. Mantén el idioma profesional de la oferta cuando sea apropiado.
+9. El resultado puede ocupar una o dos páginas; nunca comprimas el contenido hasta volverlo difícil de leer.
+10. El objetivo es posicionar al candidato para esta oferta concreta, no producir un CV genérico.
+
+Devuelve exactamente esta estructura, usando cadenas vacías o listas vacías cuando un dato no exista:
+{
+  "nombre": "...",
+  "cargo": "...",
+  "contacto": {
+    "telefono": "...",
+    "correo": "...",
+    "sitio_web": "...",
+    "ubicacion": "..."
+  },
+  "perfil": "...",
+  "experiencia": [
+    {
+      "cargo": "...",
+      "empresa": "...",
+      "fechas": "...",
+      "ubicacion": "...",
+      "logros": ["...", "..."]
+    }
+  ],
+  "educacion": [
+    {"titulo": "...", "institucion": "...", "fecha": "..."}
+  ],
+  "habilidades": [
+    {"categoria": "...", "items": "..."}
+  ],
+  "idiomas": ["..."],
+  "certificaciones": ["..."]
+}
+
+Ordena la experiencia de la más reciente a la más antigua. No incluyas referencias profesionales salvo que la oferta las solicite.
+
+CV base:
+---
+ZZCVZZ
+---
+
+Oferta de empleo:
+---
+ZZJOBZZ
+---
