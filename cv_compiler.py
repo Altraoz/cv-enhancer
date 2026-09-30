@@ -363,10 +363,10 @@ def main() -> int:
     offer_folder = args.folder
     output = offer_folder / "data"
     output.mkdir(parents=True, exist_ok=True)
-    tex_path = output / "cv_adaptado.tex"
+    tex_path = output / "cv_carlos_urresty.tex"
     content_path = output / "contenido_adaptado.json"
     template_path = Path(__file__).with_name("latex_template.tex")
-    pdf_path = offer_folder / "cv_adaptado.pdf"
+    pdf_path = offer_folder / "cv_carlos_urresty.pdf"
 
     if args.pdf_only:
         if not tex_path.exists():

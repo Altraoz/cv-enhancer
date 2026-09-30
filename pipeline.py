@@ -60,7 +60,7 @@ def run_scraper(url: str, name: str, offer_date: str | None, use_browser: bool) 
 def validate_generated_artifacts(offer_folder: Path, mode: str) -> Path:
     output_folder = offer_folder / "data"
     content_path = output_folder / "contenido_adaptado.json"
-    tex_path = output_folder / "cv_adaptado.tex"
+    tex_path = output_folder / "cv_carlos_urresty.tex"
 
     if not content_path.exists():
         raise RuntimeError(f"No se generó el JSON adaptado: {content_path}")
@@ -78,7 +78,7 @@ def validate_generated_artifacts(offer_folder: Path, mode: str) -> Path:
         raise RuntimeError("El archivo LaTeX generado está incompleto.")
 
     if mode == "full":
-        pdf_path = offer_folder / "cv_adaptado.pdf"
+        pdf_path = offer_folder / "cv_carlos_urresty.pdf"
         if not pdf_path.exists() or pdf_path.stat().st_size < 100:
             raise RuntimeError(f"No se generó un PDF válido: {pdf_path}")
         return pdf_path

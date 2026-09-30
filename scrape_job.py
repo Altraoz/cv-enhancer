@@ -165,16 +165,20 @@ def scrape_linkedin(url: str) -> dict[str, str]:
     return data
 
 
-def scrape_indeed(url: str) -> dict[str, str]:
-    """Extrae campos habituales de una oferta pública de Indeed."""
-    data = scrape_public_page(url)
-    response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
-    soup = BeautifulSoup(response.text, "html.parser")
-    data["title"] = first_text(soup, [
+def extract_indeed_html(html: str, url: str) -> dict[str, str]:
+    """Extrae una oferta de Indeed a partir del HTML ya descargado."""
+    soup = BeautifulSoup(html, "html.parser")
+    title = first_text(soup, [
         "h1[data-testid='jobsearch-JobInfoHeader-title']",
         "h1.jobsearch-JobInfoHeader-title",
         "h1",
-    ]) or data["title"]
+        "meta[property='og:title']",
+    ])
+    description = first_text(soup, [
+        "div#jobDescriptionText",
+        "[data-testid='jobDescriptionText']",
+        ".jobsearch-jobDescriptionText",
+    ])
     company = first_text(soup, [
         "div[data-testid='inlineHeader-companyName']",
         "[data-company-name='true']",
@@ -185,15 +189,68 @@ def scrape_indeed(url: str) -> dict[str, str]:
         "[data-testid='job-location']",
         ".jobsearch-JobInfoHeader-subtitle div",
     ])
-    if company or location:
-        data["description"] = "\n".join(value for value in [company, location] if value)
-    description = first_text(soup, [
-        "div#jobDescriptionText",
-        "[data-testid='jobDescriptionText']",
-    ])
-    if description:
-        data["body"] = normalize_job_text(description)
+    if not title:
+        title_tag = soup.find("meta", property="og:title") or soup.find("title")
+        if title_tag:
+            title = title_tag.get("content", "") if title_tag.name == "meta" else title_tag.get_text(" ", strip=True)
+    if not description:
+        main = soup.find("main") or soup.find("article") or soup.body
+        description = main.get_text("\n", strip=True) if main else ""
+    return {
+        "title": clean_text(title),
+        "description": "\n".join(value for value in [company, location] if value),
+        "body": normalize_job_text(description),
+        "company": company,
+        "location": location,
+    }
+
+
+def scrape_indeed_with_browser(url: str) -> dict[str, str]:
+    """Carga Indeed con un navegador normal cuando su endpoint HTTP responde 403."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError as exc:
+        raise RuntimeError("Indeed bloqueó la descarga HTTP. Instala Playwright para usar el controlador de Indeed.") from exc
+
+    try:
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch(headless=True)
+            page = browser.new_page(
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36"
+            )
+            page.goto(url, wait_until="domcontentloaded", timeout=45_000)
+            page.wait_for_timeout(2_500)
+            html = page.content()
+            browser.close()
+    except Exception as exc:
+        raise RuntimeError(f"No se pudo cargar la oferta de Indeed con el navegador: {exc}") from exc
+
+    data = extract_indeed_html(html, url)
+    if len(data["body"]) < 100:
+        raise RuntimeError("Indeed no entregó el contenido de la oferta; puede requerir verificación o estar bloqueando el acceso.")
     return data
+
+
+def scrape_indeed(url: str) -> dict[str, str]:
+    """Extrae una oferta de Indeed por HTTP y usa navegador como respaldo ante 403."""
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36",
+        "Accept-Language": "es-CO,es;q=0.9,en;q=0.8",
+    }
+    try:
+        response = requests.get(url, headers=headers, timeout=30)
+        response.raise_for_status()
+        data = extract_indeed_html(response.text, response.url)
+        if len(data["body"]) >= 100:
+            return data
+    except requests.HTTPError as exc:
+        if not exc.response or exc.response.status_code != 403:
+            raise RuntimeError(f"Indeed no permitió descargar la oferta: {exc}") from exc
+        print("Indeed respondió 403; intentando con el controlador de navegador...", flush=True)
+    except requests.RequestException as exc:
+        print(f"No se pudo descargar Indeed por HTTP ({exc}); intentando con el controlador de navegador...", flush=True)
+
+    return scrape_indeed_with_browser(url)
 
 
 def scrape_computrabajo(url: str) -> dict[str, str]:
